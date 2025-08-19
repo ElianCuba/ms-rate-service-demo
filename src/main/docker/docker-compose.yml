@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: banco-abc-postgres
+    environment:
+      POSTGRES_DB: banco_abc
+      POSTGRES_USER: banco_user
+      POSTGRES_PASSWORD: banco_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - banco-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: banco-abc-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@banco.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+    networks:
+      - banco-network
+
+volumes:
+  postgres_data:
+
+networks:
+  banco-network:
+    driver: bridge

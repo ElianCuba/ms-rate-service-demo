@@ -1,0 +1,90 @@
+openapi: 3.0.3
+info:
+  title: API Tipo de Cambio
+  description: API pública para consultar tipo de cambio por fecha o el día actual.
+  version: "1.0.0"
+servers:
+  - url: https://free.e-api.net.pe
+
+paths:
+  /tipo-cambio/today.json:
+    get:
+      summary: Obtener el tipo de cambio del día actual
+      operationId: getLatestRates
+      responses:
+        "200":
+          description: Tipo de cambio encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiExchangeRateResponse"
+        "403":
+          description: Error de acceso o búsqueda no disponible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tipo-cambio/{fecha}.json:
+    get:
+      summary: Obtener el tipo de cambio por fecha
+      operationId: getLatestRateByDate
+      parameters:
+        - name: fecha
+          in: path
+          required: true
+          description: Fecha en formato **yyyy-MM-dd**
+          schema:
+            type: string
+            example: "2025-08-15"
+      responses:
+        "200":
+          description: Tipo de cambio encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiExchangeRateResponse"
+        "403":
+          description: Error de acceso o búsqueda no disponible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    ApiExchangeRateResponse:
+      type: object
+      properties:
+        fecha:
+          type: string
+          format: string
+          example: "2025-08-15"
+        sunat:
+          type: double
+          format: double
+          example: 3.535
+        compra:
+          type: double
+          format: double
+          example: 3.533
+        venta:
+          type: double
+          format: double
+          example: 3.537
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        error:
+          type: string
+          example: "La busqueda solicitada no se encuentra disponible temporalmente"
+        http_code:
+          type: integer
+          example: 403
+        http_error:
+          type: string
+          example: "Forbidden"
